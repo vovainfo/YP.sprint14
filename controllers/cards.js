@@ -14,7 +14,8 @@ module.exports.postCard = (req, res) => {
 };
 
 module.exports.delCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
+//  Card.findByIdAndRemove(req.params.id)
+  Card.findOneAndRemove({ _id: req.params.id, owner: req.user._id })
     .then((card) => res.send(card))
     .catch((err) => res.status(500).send(err));
 };
