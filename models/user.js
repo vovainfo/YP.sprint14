@@ -49,4 +49,13 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     });
 };
 
+userSchema.statics.noPassword = function (user) {
+  const {
+    _id, name, about, avatar, email, __v,
+  } = user;
+  return {
+    _id, name, about, avatar, email, __v,
+  };
+};
+
 module.exports = mongoose.model('user', userSchema);

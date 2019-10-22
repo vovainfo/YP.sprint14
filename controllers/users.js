@@ -22,21 +22,22 @@ module.exports.createUser = (req, res) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send(user))
+    .then((user) =>
+      res.send(User.noPassword(user)))
     .catch((err) => res.status(500).send(err));
 };
 
 module.exports.pathUserMe = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about })
-    .then((user) => res.send(user))
+    .then((user) => { res.send(User.noPassword(user));})
     .catch((err) => res.status(500).send(err));
 };
 
 module.exports.pathAvatarMe = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar })
-    .then((user) => res.send(user))
+    .then((user) => res.send(User.noPassword(user)))
     .catch((err) => res.status(500).send(err));
 };
 
