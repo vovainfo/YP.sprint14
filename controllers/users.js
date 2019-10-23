@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 module.exports.getAllUsers = (req, res) => {
-  User.find({})
+  User.find({}, '-password')
     .then((users) => res.send(users))
     .catch((err) => res.status(500).send(err));
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(req.params.id)
+  User.findById(req.params.id, '-password')
     .then((user) => res.send(user))
     .catch((err) => res.status(500).send(err));
 };
@@ -22,22 +22,25 @@ module.exports.createUser = (req, res) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) =>
-      res.send(User.noPassword(user)))
+    .then((user) => {
+      const userNoPassword = user.toObject();
+      delete userNoPassword.password;
+      res.send(userNoPassword);
+    })
     .catch((err) => res.status(500).send(err));
 };
 
 module.exports.pathUserMe = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about })
-    .then((user) => { res.send(User.noPassword(user));})
+  User.findByIdAndUpdate(req.user._id, { name, about }, { select: '-password' })
+    .then((user) => { res.send(user); })
     .catch((err) => res.status(500).send(err));
 };
 
 module.exports.pathAvatarMe = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar })
-    .then((user) => res.send(User.noPassword(user)))
+  User.findByIdAndUpdate(req.user._id, { avatar }, { select: '-password' })
+    .then((user) => res.send(user))
     .catch((err) => res.status(500).send(err));
 };
 

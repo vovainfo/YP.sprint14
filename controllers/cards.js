@@ -14,14 +14,22 @@ module.exports.postCard = (req, res) => {
 };
 
 module.exports.delCard = (req, res) => {
-//  Card.findByIdAndRemove(req.params.id)
-  Card.findOneAndRemove({ _id: req.params.id, owner: req.user._id })
-    .then((card) => res.send(card))
+//    Card.findOneAndRemove({ _id: req.params.id, owner: req.user._id })
+  Card.findById(req.params.id)
+    .then((card) => {
+      if (card.owner.equals(req.user._id)) {
+        Card.findByIdAndRemove(req.params.id)
+          .then((card1) => res.send(card1))
+          .catch((err) => res.status(500).send(err));
+      } else {
+        throw new Error('Нельзя удалять чужую карточку!');
+      }
+    })
     .catch((err) => res.status(500).send(err));
 };
 
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(req.params.id, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => res.send(card))
     .catch((err) => res.status(500).send(err));
 };
