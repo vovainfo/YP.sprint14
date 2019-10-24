@@ -15,9 +15,11 @@ module.exports.postCard = (req, res) => {
 
 module.exports.delCard = (req, res) => {
   Card.findById(req.params.id)
+  // eslint-disable-next-line consistent-return
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
-        throw new Error('Нельзя удалять чужую карточку!');
+        // eslint-disable-next-line prefer-promise-reject-errors
+        return Promise.reject({ message: 'Нельзя удалять чужую карточку!' });
       }
     })
     .then(() => Card.findByIdAndRemove(req.params.id))
