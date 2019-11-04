@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: mongoose.SchemaTypes.Email,
-    required: true,
     unique: true,
+    required: true,
   },
   password: {
     type: String,
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// eslint-disable-next-line func-names
+// eslint-disable-next-line  func-names
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
@@ -49,14 +49,5 @@ userSchema.statics.findUserByCredentials = function (email, password) {
         });
     });
 };
-/*
-userSchema.statics.noPassword = function (user) {
-  const {
-    _id, name, about, avatar, email, __v,
-  } = user;
-  return {
-    _id, name, about, avatar, email, __v,
-  };
-};
-*/
+
 module.exports = mongoose.model('user', userSchema);
