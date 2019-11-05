@@ -51,7 +51,7 @@ app.use((err, req, res, next) => {
     .status(statusCode)
     .send({ message: message ? 'На сервере произошла ошибка' : message });
 });
-app.get('*', (req, res) => res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }));
+app.use('*', (req, res) => res.status(404).send({ message: 'Запрашиваемый ресурс не найден' }));
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
